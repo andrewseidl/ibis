@@ -20,8 +20,8 @@ import ibis.expr.datatypes as dt
 import ibis.expr.schema as sch
 import ibis.expr.types as ir
 
-EXECUTION_TYPE_ICP = 1
-EXECUTION_TYPE_ICP_GPU = 2
+EXECUTION_TYPE_IPC = 1
+EXECUTION_TYPE_IPC_GPU = 2
 EXECUTION_TYPE_CURSOR = 3
 
 fully_qualified_re = re.compile(r"(.*)\.(?:`(.*)`|(.*))")
@@ -312,7 +312,7 @@ class MapDClient(SQLClient):
         database : str
         protocol : {'binary', 'http', 'https'}
         execution_type : {
-          EXECUTION_TYPE_ICP, EXECUTION_TYPE_ICP_GPU, EXECUTION_TYPE_CURSOR
+          EXECUTION_TYPE_IPC, EXECUTION_TYPE_IPC_GPU, EXECUTION_TYPE_CURSOR
         }
 
         """
@@ -325,8 +325,8 @@ class MapDClient(SQLClient):
         self.protocol = protocol
 
         if execution_type not in (
-            EXECUTION_TYPE_ICP,
-            EXECUTION_TYPE_ICP_GPU,
+            EXECUTION_TYPE_IPC,
+            EXECUTION_TYPE_IPC_GPU,
             EXECUTION_TYPE_CURSOR,
         ):
             raise Exception('Execution type defined not available.')
@@ -397,9 +397,9 @@ class MapDClient(SQLClient):
         if isinstance(query, (DDL, DML)):
             query = query.compile()
 
-        if self.execution_type == EXECUTION_TYPE_ICP:
+        if self.execution_type == EXECUTION_TYPE_IPC:
             execute = self.con.select_ipc
-        elif self.execution_type == EXECUTION_TYPE_ICP_GPU:
+        elif self.execution_type == EXECUTION_TYPE_IPC_GPU:
             execute = self.con.select_ipc_gpu
         else:
             execute = self.con.cursor().execute
